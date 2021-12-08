@@ -1,1 +1,51 @@
-// TODO
+.container {
+    padding: 0 2rem;
+    max-width: 1120px;
+    margin: 0 auto;
+    h4 {
+        margin: 0.6rem 0 1.2rem;
+        color: var(--body);
+        font-weight: 400;
+    }
+    section {
+        
+        cursor: pointer;
+        margin-top: 2.5rem;
+
+        &:hover {
+            transition: filter 0.2s;
+            filter: brightness(0.7)
+        }
+    }
+
+    button {
+        margin-top: 3rem;
+        color: var(--highlight);
+        border: 0;
+        background-color: var(--background);
+        cursor: pointer;
+        font-family: "Inter" sans-serif;
+        &:hover {
+            transition: filter 2s;
+            filter: grayscale(0.2)
+        }
+
+    }
+
+   &:first-child {
+        margin-top: 2rem;
+    }
+
+    .info {
+        display: flex;
+        align-items: center;
+        justify-content: left;
+        small {
+            margin: 0 0.5rem; 
+            font-size: 0.7rem;
+        }
+    }
+    
+}
+
+

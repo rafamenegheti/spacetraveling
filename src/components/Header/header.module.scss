@@ -1,1 +1,11 @@
-// TODO
+.header {
+    max-width: 1120px;
+    margin: 0 auto;
+    padding: 2.5rem 2rem;
+    img:hover {
+
+      transition: filter 0.2s;
+      cursor: pointer;
+      filter: brightness(0.8);
+    }
+}
