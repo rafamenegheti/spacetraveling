@@ -41,14 +41,22 @@ export default function Post({ post }: PostProps) {
     return <h1>Carregando...</h1>;
   }
 
+
   function countWords() {
     let totalWords = 0;
-    post.data.content.map(data => {
-      let wordCount = data.body.text.match(/(\w+)/g).length;
-      totalWords += wordCount;
-    });
-    return Math.round(totalWords / 200);
+    const toText = post.data.content.map(data => {
+      return(
+      PrismicDOM.RichText.asText(data.body)
+      )
+    })
+
+    for(let e of toText) {
+      totalWords = e.match(/(\w+)/g).length;
+    }
+    return Math.round((totalWords/200))
   }
+
+  countWords()
 
   return (
     <main className={styles.main}>
@@ -77,7 +85,7 @@ export default function Post({ post }: PostProps) {
             return (
               <>
                 <div dangerouslySetInnerHTML={{ __html: data.heading }} className={styles.heading}/>
-                <div dangerouslySetInnerHTML={{ __html: data.body.text }} />
+                <div dangerouslySetInnerHTML={{ __html: PrismicDOM.RichText.asHtml(data.body) }} />
               </>
             );
           })}
@@ -121,9 +129,7 @@ export const getStaticProps = async context => {
       author: response.data.author,
       content: response.data.content.map(data => ({
         heading: data.heading,
-        body: {
-          text: PrismicDOM.RichText.asHtml(data.body),
-        },
+        body: data.body,
       })),
     },
   };
