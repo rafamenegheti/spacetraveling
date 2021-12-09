@@ -8,10 +8,9 @@ import Prismic from '@prismicio/client';
 import { useRouter } from 'next/router';
 import { format } from 'date-fns';
 import ptBR from 'date-fns/locale/pt-BR';
-import { report } from 'process';
-import PrismicDOM from "prismic-dom"
+import PrismicDOM from 'prismic-dom';
 import { FiUser, FiCalendar, FiClock } from 'react-icons/fi';
-import { RichText, RichTextBlock } from 'prismic-reactjs'
+import { RichText, RichTextBlock } from 'prismic-reactjs';
 
 interface Post {
   first_publication_date: string | null;
@@ -25,7 +24,7 @@ interface Post {
       heading: string;
       body: {
         text: string;
-      }[];
+      };
     }[];
   };
 }
@@ -34,34 +33,62 @@ interface PostProps {
   post: Post;
 }
 
-export default function Post({ post }: PostProps ) {
+export default function Post({ post }: PostProps) {
+  
   const router = useRouter();
+  const isFallback = router.isFallback
+  if (isFallback) {
+    return <h1>Carregando...</h1>;
+  }
 
-  if (router.isFallback) {
-    return(<h1>Carregando...</h1>)
+  function countWords() {
+    let totalWords = 0;
+    post.data.content.map(data => {
+      let wordCount = data.body.text.match(/(\w+)/g).length;
+      totalWords += wordCount;
+    });
+    return Math.round(totalWords / 200);
   }
 
   return (
     <main className={styles.main}>
-            <img src={post.data.banner.url} alt="image from the article" />
-    <div className={styles.container}>
-      <article>
-        <h1>{post.data.title}</h1>
-        <div className={commonStyles.info}>
-              <FiCalendar />
-              <small> {format(new Date(post.first_publication_date), "dd LLL yyyy", {locale: ptBR})} </small>
-              <FiUser />
-              <small>{post.data.author}</small>
-              <FiClock />
-              <small>4 min</small>
-            </div>
-      </article>
-    </div>
-  </main>
+      <img
+        src={post.data.banner.url}
+        alt="image from the article"
+        className={styles.postImage}
+      />
+      <div className={styles.container}>
+        <article>
+          <h1>{post.data.title}</h1>
+          <div className={styles.info}>
+            <FiCalendar />
+            <small>
+              {' '}
+              {format(new Date(post.first_publication_date), 'dd LLL yyyy', {
+                locale: ptBR,
+              })}{' '}
+            </small>
+            <FiUser />
+            <small>{post.data.author}</small>
+            <FiClock />
+            <small>{`${countWords()} min`}</small>
+          </div>
+          {post.data.content.map(data => {
+            return (
+              <>
+                <div dangerouslySetInnerHTML={{ __html: data.heading }} className={styles.heading}/>
+                <div dangerouslySetInnerHTML={{ __html: data.body.text }} />
+              </>
+            );
+          })}
+        </article>
+      </div>
+    </main>
   );
 }
 
 export const getStaticPaths = async () => {
+
   const prismic = getPrismicClient();
   const posts = await prismic.query(
     Prismic.Predicates.at('document.type', 'pos')
@@ -72,6 +99,7 @@ export const getStaticPaths = async () => {
   }));
 
   const pathsTest = paths.splice(1);
+  console.log(pathsTest)
 
   return { paths: pathsTest, fallback: true };
 };
@@ -94,18 +122,17 @@ export const getStaticProps = async context => {
       content: response.data.content.map(data => ({
         heading: data.heading,
         body: {
-          text: data.body,
+          text: PrismicDOM.RichText.asHtml(data.body),
         },
       })),
     },
   };
 
-  //console.log(post);
 
   return {
     props: {
-      post
+      post,
     },
-    revalidate: 60 * 30 // 30 minutes
+    revalidate: 60 * 30, // 30 minutes
   };
 };

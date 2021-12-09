@@ -2,9 +2,52 @@
 .container {
     padding: 0 2rem;
     max-width: 1120px;
-    margin: 0 auto;// TODO
+    margin: 0 auto;
 
-    img {
-        width: 100vw;
+    p, h2, h3, h4, h5, h6 {
+        line-height: 1.2rem;
+        margin-bottom: 1.3rem;
     }
+
+    h1 {
+        margin-top: 3rem;
+        margin-bottom: 1rem;
+        font-size: 2.2rem;
+    }
+
+    &:last-child {
+        margin-bottom: 5rem;
+    }
+
+    a {
+        color: var(--highlight);
+        transition: filter 0.1s;
+        text-decoration: none;
+        &:hover {
+            filter: brightness(0.8);
+        }
+    }
+
+}
+
+.info {
+    display: flex;
+    align-items: center;
+    margin-bottom: 5rem;
+    
+    small {
+        margin: 0 1rem 0 0.25rem;
+    }
+}
+
+.heading {
+    font-weight: 600;
+    font-size: 2rem;
+    margin-bottom: 2rem;
+}
+
+    
+
+.postImage{
+    width: 100%;
 }
