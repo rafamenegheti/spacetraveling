@@ -47,8 +47,6 @@ export default function Home({ postsPagination }: HomeProps) {
     });
   }
 
-  console.log(post);
-
   const nextPage = post.next_page
 
   async function handleMorePosts(): Promise<void> {
@@ -107,6 +105,7 @@ export const getStaticProps: GetStaticProps = async () => {
     [Prismic.predicates.at('document.type', 'pos')],
     {
       fetch: ['pos.title', 'pos.author', 'pos.subtitle'],
+      orderings: "[document.first_publication_date]",
       pageSize: 1,
     }
   );
